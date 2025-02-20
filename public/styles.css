@@ -21,7 +21,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     position:fixed;
-    width: 90%;
+    width: 100%;
 
     h1 {
         cursor: pointer;
@@ -36,6 +36,7 @@ nav {
 .profile-panel {
     display: flex;
     flex-direction: column;
+    margin-right: 3rem;
 }
 
 .profile-panel span {
