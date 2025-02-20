@@ -1,0 +1,55 @@
+<% function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+
+<%- include('navbar') %>
+<main>
+    <h1>current folder: <%= active_folder ? active_folder.name : 'home' %></h1>
+
+    <div class="folder-list">
+        <% folders.forEach(child => { %>
+            <div class="folder-item" data-id="<%= child.id %>">
+                <a href="/folders/<%= child.id %> " class="folder-link">
+                <span class="folder-icon"></span>
+                <span class="folder-title"><%= child.name %></span>
+            </a>
+            <div class="file-info"> 
+                <span>Creator: <%= child.owner.username %></span>
+                <span>Created: <%= new Date(child.createdAt).toLocaleString('en-US') %> </span>
+            </div>
+
+            </div>
+        <% }); %>
+        <% files.forEach(child => { %>
+            
+            <div class="folder-item" data-id="<%= child.id %>">
+                <a href="/files/<%= child.id %>" class="folder-link">
+                <span class="file-icon"></span>
+                <span class="folder-title"><%= child.filename %></span>
+                </a>
+            <div class="file-info"> 
+                <span>Creator: <%= child.owner.username %></span>
+                <span>Size: <%= formatBytes(child.size)%> </span> &nbsp;
+                <span>Created: <%= new Date(child.createdAt).toLocaleString('en-US') %> </span>
+            </div>
+                <div class="folder-actions">
+                    <button class=""><a href=/files/<%= child.id %>>📩</a></button>
+                </div>
+            </div>
+
+            </div>
+        <% }); %>
+    </div>
+</main>

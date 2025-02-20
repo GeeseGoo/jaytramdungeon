@@ -1,0 +1,205 @@
+<% function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}%>
+<main>
+    <h1>current folder: <%= active_folder ? active_folder.name : 'home' %></h1>
+
+    <div class="button-panel">
+        <button onclick="openModal()">New Folder</button>
+        <button onclick="openUploadModal()">Upload File</button>
+    </div>
+
+    <!-- Folder creation modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button onClick="closeModal()" class="close">&times;</button>
+            <form id="createForm" method="POST" action="/folders/<%= active_folder ? active_folder.id : 'null' %>">
+                <input type="text" id="nameInput" name="folderName" placeholder="Enter name..." required>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add file upload modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <button onClick="closeUploadModal()" class="close">&times;</button>
+            <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/files/<%= active_folder ? active_folder.id : 'null' %>">
+                <input type="file" name="file" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <button onClick="closeShareModal()" class="close">&times;</button>
+            <h2>Share Folder</h2>
+            <input type="text" id="shareLinkInput" readonly>
+            <button onclick="copyShareLink()">Copy Link</button>
+        </div>
+    </div>
+
+    <div class="folder-list">
+        <% folders.forEach(child => { %>
+            <div class="folder-item" data-id="<%= child.id %>">
+                <a href="/folders/<%= child.id %> " class="folder-link">
+                <span class="folder-icon"></span>
+                <span class="folder-title"><%= child.name %></span>
+            </a>
+            <div class="file-info"> 
+                <span>Creator: <%= child.owner.username %></span>
+                <span>Created: <%= new Date(child.createdAt).toLocaleString('en-US') %> </span>
+            </div>
+                <div class="folder-actions">
+                    <button class="share-button" onclick="openShareModal('<%= child.id %>')">🔗</button>
+
+                <button class="edit-button" onclick="editFolder(event, '<%= child.id %>')">✏️</button>
+                    <form action="/folders/<%=child.id%>/delete" method="POST" style="display:inline;">
+                        <input type="hidden" name="folderName" value="<%= child.name %>">
+                        <button type="submit" class="delete-button">🗑️</button>
+                    </form>
+                </div>
+            </div>
+        <% }); %>
+        <% files.forEach(child => { %>
+            
+            <div class="folder-item" data-id="<%= child.id %>">
+                <a href="/files/<%= child.id %>" class="folder-link">
+                <span class="file-icon"></span>
+                <span class="folder-title"><%= child.filename %></span>
+                </a>
+            <div class="file-info"> 
+                <span>Creator: <%= child.owner.username %></span>
+                <span>Size: <%= formatBytes(child.size)%> </span> &nbsp;
+                <span>Created: <%= new Date(child.createdAt).toLocaleString('en-US') %> </span>
+            </div>
+                <div class="folder-actions">
+                    <button class=""><a href=/files/<%= child.id %>>📩</a></button>
+
+                    <form action="/files/<%=child.id%>/delete" method="POST" style="display:inline;">
+                        <input type="hidden" name="folderName" value="<%= child.id %>">
+                        <button type="submit" class="delete-button">🗑️</button>
+                    </form>
+                </div>
+            </div>
+
+            </div>
+        <% }); %>
+    </div>
+</main>
+
+<script>
+
+  function openShareModal(folderId) {
+    console.log(`/folders/${folderId}/share`)
+
+      const shareModal = document.getElementById('shareModal');
+      const shareLinkInput = document.getElementById('shareLinkInput');
+      // Build the share link (adjust the URL as needed)
+    fetch(`/folders/${folderId}/share`)
+      .then()
+      .catch(error => {
+        console.error('Error fetching share link:', error);
+        alert('Failed to fetch share link');
+      });
+      shareLinkInput.value = window.location.origin + "/folders/" + folderId;
+      shareModal.style.display = 'block';
+  }
+
+  function closeShareModal() {
+      const shareModal = document.getElementById('shareModal');
+      shareModal.style.display = 'none';
+  }
+
+  async function copyShareLink() {
+      const shareLinkInput = document.getElementById('shareLinkInput');
+      try {
+          await navigator.clipboard.writeText(shareLinkInput.value);
+          alert("Link copied to clipboard!");
+      } catch (err) {
+          alert("Failed to copy link!");
+      }
+  }
+  
+    function editFolder(event, id) {
+        event.stopPropagation();
+        console.log(id);
+        const folderItem = document.querySelector(`.folder-item[data-id="${id}"]`);
+        const folderTitle = folderItem.querySelector('.folder-title');
+        const originalName = folderTitle.textContent;
+
+        folderTitle.contentEditable = true;
+        folderTitle.focus();
+        document.execCommand('selectAll', false, null);
+
+
+        folderTitle.addEventListener('blur', function() {
+            const newName = folderTitle.textContent.trim();
+            if (newName && newName !== originalName) {
+                fetch(`/folders/${id}/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ newName: newName })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        folderItem.setAttribute('data-id', newName);
+                    } else {
+                        folderTitle.textContent = originalName;
+                        alert('Error updating folder name');
+                    }
+                })
+                .catch(error => {
+                    folderTitle.textContent = originalName;
+                    alert('Error updating folder name');
+                });
+            } else {
+                folderTitle.textContent = originalName;
+            }
+            folderTitle.contentEditable = false;
+        });
+    }
+
+    function openModal(type) {
+
+    modal = document.getElementById('modal');
+    input = document.getElementById('nameInput');
+        
+    // Show modal
+    modal.style.display = 'block';
+    input.focus();
+}
+
+function closeModal() {
+    // Hide modal
+    modal = document.getElementById('modal');
+    modal.style.display = 'none';
+    form = document.getElementById('createForm');
+    form.reset();
+    
+}
+
+    function openUploadModal() {
+        const modal = document.getElementById('uploadModal');
+        modal.style.display = 'block';
+    }
+
+    function closeUploadModal() {
+        const modal = document.getElementById('uploadModal');
+        const form = document.getElementById('uploadForm');
+        modal.style.display = 'none';
+        form.reset();
+    }
+
+
+</script>

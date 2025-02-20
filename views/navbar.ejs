@@ -1,0 +1,13 @@
+<nav>
+    <a href="/"><h1>Jay Tram's Hentai Dungeon</h1></a>
+
+    <div class="profile-panel">
+        <% if (locals.user) { %>
+            <span><%- locals.user.username %> </span>
+            <a href="/log-out">LOG OUT</a>
+        <% } else { %>
+            <a href="/">LOGIN</a>
+            <a href="/sign-up">SIGN UP</a>
+        <% } %>
+    </div>
+</nav>

@@ -1,0 +1,14 @@
+<div>
+    <div class="fileuploader-folder-name">
+        <span class="fileuploader-folder-icon"></span>
+        <span class="fileuploader-folder-title"></span>
+    </div>
+    <div class="fileuploader-folder-items">
+        <% children.forEach(function(child) { %>
+            <div class="fileuploader-folder-item" data-name="<%= child.name %>">
+                <span class="fileuploader-folder-item-icon"></span>
+                <span class="fileuploader-folder-item-title"><%= child.name %></span>
+            </div>
+        <% }); %>
+    </div>
+</div>

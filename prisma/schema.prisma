@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   
+  expiresAt   DateTime
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  username String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  files    File[]
+  folders  Folder[]
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  size      Int
+  mimeType  String
+  content   Bytes    // Binary content storage
+  createdAt DateTime @default(now())
+  folder    Folder?  @relation(fields: [folderId], references: [id])
+  folderId  Int?
+  owner     User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Folder {
+  id        Int     @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  userId    Int
+  files     File[]
+  owner     User @relation(fields: [userId], references: [id])
+  folder   Folder? @relation("FolderToFolder", fields: [folderId], references: [id])
+  folderId Int?
+  children Folder[] @relation("FolderToFolder")
+  isShared Boolean @default(false)
+}
