@@ -20,6 +20,8 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position:fixed;
+    width: 90%;
 
     h1 {
         cursor: pointer;
@@ -297,3 +299,143 @@ main {
         cursor: pointer;
         flex-grow: 1;
     }
+
+    /* --- Existing global styles remain unchanged --- */
+
+
+/* Isolated Login Page Styles */
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    min-width: 100vw;
+}
+
+.login-page > * {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.login-page h1 {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-page form {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login-page form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.login-page form input[type="text"],
+.login-page form input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+.login-page form button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.login-page form button:hover {
+    background-color: #555;
+}
+
+.login-page a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    text-decoration: none;
+    font-size: 0.9em;
+    color: #333;
+}
+
+/* Isolated Sign-Up Page Styles */
+.sign-up-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    background-color: #f2f2f2;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    min-width: 100vw;
+}
+
+.sign-up-page h1 {
+    font-size: 1.8em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sign-up-page form {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.sign-up-page form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.sign-up-page form input[type="text"],
+.sign-up-page form input[type="password"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 1em;
+}
+
+.sign-up-page form button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sign-up-page form button:hover {
+    background-color: #555;
+}

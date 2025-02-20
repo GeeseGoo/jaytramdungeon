@@ -2,16 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <h1>Sign Up</h1>
-  <form action="" method="POST">
-    <label for="username">Username</label>
-    <input id="username" name="username" placeholder="username" type="text" />
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password" />
-    <button>Sign Up</button>
-  </form>
+  <%- include('navbar') %>
+  <div class="sign-up-page">
+    <h1>Sign Up</h1>
+    <form id="signUpForm" action="" method="POST">
+      <label for="username">Username</label>
+      <input id="username" name="username" placeholder="username" type="text" />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" />
+      <button type="submit">Sign Up</button>
+    </form>
+    <div id="error-message" style="color: red; display: none;"></div>
+  </div>
+  <script>
+    document.getElementById('signUpForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const response = await fetch('/sign-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+      if (response.status === 400) {
+        const errorMessage = await response.text();
+        document.getElementById('error-message').innerText = errorMessage;
+        document.getElementById('error-message').style.display = 'block';
+      } else {
+        // Handle successful sign up
+        window.location.href = '/welcome';
+      }
+    });
+  </script>
 </body>
 </html>

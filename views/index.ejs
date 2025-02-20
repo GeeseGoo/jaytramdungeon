@@ -2,26 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>Login</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
-
 <body>
-  <% if (locals.user) {%>
+  <% if (locals.user) { %>
     <%- include('navbar') %>
     <%- include('main', {folders: folders, active_folder, files}) %>
-    <% } else { %>
-      <h1>please log in</h1>
+  <% } else { %>
+    <%- include('navbar') %>
+    <div class="login-page">
+      <h1>Please log in</h1>
+    <div>
       <form action="/log-in" method="POST">
         <label for="username">Username</label>
         <input id="username" name="username" placeholder="username" type="text" />
         <label for="password">Password</label>
         <input id="password" name="password" type="password" />
         <button>Log In</button>
-      </form>
-    <%}%>
 
+      </form>
+      <a href="/sign-up">Sign Up</a>
+
+    </div>
+    </div>
+  <% } %>
 </body>
 </html>
-
-

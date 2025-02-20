@@ -72,19 +72,27 @@ app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
 app.post("/sign-up", async (req, res, next) => {
   try {
-   const hashedPassword = await bcrypt.hash(req.body.password, 10);
-   await prisma.user.create({
+    const existingUser = await prisma.user.findUnique({
+      where: { username: req.body.username }
+    });
+
+    if (existingUser) {
+      return res.status(400).send("Username already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    await prisma.user.create({
       data: {
         username: req.body.username,
         password: hashedPassword
       }
-   })
-   res.redirect("/");
+    });
+    res.redirect("/");
   } catch (error) {
-     console.error(error);
-     next(error);
-    }
- });
+    console.error(error);
+    next(error);
+  }
+});
  
 
 app.post("/log-in", passport.authenticate("local", {
