@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
 
     const parents = await getAllParents(resourceType, resourceId);
     console.log('parents', parents, parents[0]);
-    if (parents[0].userId === userId || parents.some(parent => parent.isShared)) {
+    if (!parents[0] || parents[0].userId === userId || parents.some(parent => parent.isShared)) {
         console.log('Access granted');
         next();
     }
