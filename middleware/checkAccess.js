@@ -33,16 +33,32 @@ async function getAllParents(resourceType, resourceId) {
 
     let resource;
     console.log(resourceId, resourceType);
+    if (resourceType === "file") {
+        resource = await prisma.file.findUnique({
+            where: {
+                id: resourceId
+            }
+        })
+
+        if (!resource) {
+            throw new Error("Error in file parent");
+        }
+    }
+    else
+    if (resourceType === "folder") {
          resource = await prisma.folder.findUnique({
             where: {
                 id: resourceId
             }
         })
 
-
-    if (!resource) {
-        throw new Error("Resource not found");
+        if (!resource) {
+            throw new Error("Error in folder parent");
+        }
     }
+
+
+
 
 
 

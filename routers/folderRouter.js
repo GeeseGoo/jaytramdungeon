@@ -9,7 +9,7 @@ const checkAccess = require("../middleware/checkAccess");
 
 // get all folders
 // get folder by id
-router.get("/:id", folderController.getFolderById);
+router.get("/:id",checkAccess, folderController.getFolderById);
 
 router.get("/:id/share", ensureAuth, checkAccess, folderController.shareFolder);
 
